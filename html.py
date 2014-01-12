@@ -1,6 +1,7 @@
 # coding=utf8
 
 import mechanize
+from bs4 import BeautifulSoup
 
 '''
 #法拍屋查詢入口
@@ -144,9 +145,7 @@ def detailSelect( br ):
     br['ctmd'] = ['all']
     br['sec'] = ['all']
     br.submit()
-    #content = res.read()
-    #with open("mechanize_results.html", "w") as f:
-    #    f.write(content)
+    
     
     br.select_form(name="form")
     #for form in br.forms():
@@ -158,7 +157,7 @@ def detailSelect( br ):
     print "Page:" + str(page_count) + ", record per page " +  str(record_per_page)
     #print page_count
     #print record_per_page
-    catchAllPage( br, page_count)
+    #catchAllPage( br, page_count)
     
     br.back()   
 
@@ -183,10 +182,33 @@ def catchAllPage( br, page_count):
         br.back()
 
 
+def soupTest():
+    #-- bs test ---
+    soup = BeautifulSoup(open("mechanize_results1.html"))
+    #print soup
+    #--------------
+    tag = soup.table
+    '''
+    for child in tag.children:
+        print "---------------" 
+        print(child)
+    '''
+    tablelist = soup.find_all("tr")    
+    for tr_data in  tablelist:
+        print "------------------------------------------------"
+        print tr_data
+        if not (tr_data.td.div is None):
+            print "$$$"
+            for str in tr_data.td.div.stripped_strings:
+                if repr(str) == repr("筆次"):
+                    print "@@"
+
+
 def dataCollect():
     br = initBrowser()
     locationSelect(br)
     
 
 if __name__ == "__main__":
-    dataCollect();
+    #dataCollect();
+    soupTest()
